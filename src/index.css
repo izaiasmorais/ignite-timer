@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#task::-webkit-calendar-picker-indicator {
+	display: none !important;
+}

@@ -24,6 +24,9 @@ export default {
 					100: "#FFFFFF",
 				},
 			},
+			fontFamily: {
+				robotoMono: ["Roboto Mono", "monospace"],
+			},
 		},
 	},
 	plugins: [],
