@@ -1,6 +1,9 @@
 import { Play } from "phosphor-react";
+import { useState } from "react";
 
 export function Home() {
+	const [task, setTask] = useState("");
+
 	return (
 		<div className="flex flex-col flex-1 items-center justify-center">
 			<form className="flex flex-col items-center gap-14">

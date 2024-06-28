@@ -24,6 +24,18 @@ export default {
 					100: "#FFFFFF",
 				},
 			},
+			borderColor: {
+				base: {
+					800: "#121214",
+					700: "#202024",
+					600: "#323238",
+					500: "#7C7C8A",
+					400: "#8D8D99",
+					300: "#C4C4CC",
+					200: "#E1E1E6",
+					100: "#FFFFFF",
+				},
+			},
 			fontFamily: {
 				robotoMono: ["Roboto Mono", "monospace"],
 			},
