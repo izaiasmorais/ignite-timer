@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Play } from "phosphor-react";
 import { useForm } from "react-hook-form";
+import { Play } from "phosphor-react";
 import { z } from "zod";
+import { useState } from "react";
 
 const newCycleFormValidationSchema = z.object({
 	task: z.string().min(1, "Informe a tarefa"),
@@ -10,20 +11,50 @@ const newCycleFormValidationSchema = z.object({
 
 type NewCycleFormData = z.infer<typeof newCycleFormValidationSchema>;
 
+interface Cycle {
+	id: string;
+	task: string;
+	minutesAmount: number;
+}
+
 export function Home() {
-	const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
+	const [cycles, setCycles] = useState<Cycle[]>([]);
+	const [activerCycleId, setActiveCycleId] = useState<string | null>(null);
+	const [pastSecondsAmount, setPastSecondsAmount] = useState(0);
+
+	const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
 		resolver: zodResolver(newCycleFormValidationSchema),
 		defaultValues: {
 			task: "",
 			minutesAmount: 0,
 		},
 	});
+
+	function handleCreateNewCycle(data: NewCycleFormData) {
+		const id = String(new Date().getTime());
+
+		const newCycle: Cycle = {
+			id,
+			task: data.task,
+			minutesAmount: data.minutesAmount,
+		};
+
+		setActiveCycleId(id);
+
+		setCycles((state) => [...state, newCycle]);
+
+		reset();
+	}
+
+	const activeCycle = cycles.find((cycle) => cycle.id === activerCycleId);
+	const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
+	const currentSeconds = activeCycle ? totalSeconds - pastSecondsAmount : 0;
+	const minutesAmount = Math.floor(currentSeconds / 60);
+	const secondsAmount = currentSeconds % 60;
+	const minutes = String(minutesAmount).padStart(2, "0");
+	const seconds = String(secondsAmount).padStart(2, "0");
 	const task = watch("task");
 	const isSubmitButtonDisabled = !task;
-
-	function handleCreateNewCycle(data: any) {
-		console.log(data);
-	}
 
 	return (
 		<div className="flex flex-col flex-1 items-center justify-center">
@@ -71,13 +102,13 @@ export function Home() {
 				</div>
 
 				<div className="font-robotoMono text-[10rem] leading-[8rem] text-base-100 flex gap-4">
-					<span className="bg-base-600 py-8 px-4 rounded-lg">0</span>
-					<span className="bg-base-600 py-8 px-4 rounded-lg">0</span>
+					<span className="bg-base-600 py-8 px-4 rounded-lg">{minutes[0]}</span>
+					<span className="bg-base-600 py-8 px-4 rounded-lg">{minutes[1]}</span>
 					<span className="text-emerald-500 flex items-center justify-center py-8 w-16">
 						:
 					</span>
-					<span className="bg-base-600 py-8 px-4 rounded-lg">0</span>
-					<span className="bg-base-600 py-8 px-4 rounded-lg">0</span>
+					<span className="bg-base-600 py-8 px-4 rounded-lg">{seconds[0]}</span>
+					<span className="bg-base-600 py-8 px-4 rounded-lg">{seconds[1]}</span>
 				</div>
 
 				<button
