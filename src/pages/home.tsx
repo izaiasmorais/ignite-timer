@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Play } from "phosphor-react";
+import { HandPalm, Play } from "phosphor-react";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import { differenceInSeconds } from "date-fns";
@@ -17,6 +17,7 @@ interface Cycle {
 	task: string;
 	minutesAmount: number;
 	startDate: Date;
+	interruptionDate?: Date;
 }
 
 export function Home() {
@@ -69,6 +70,20 @@ export function Home() {
 		reset();
 	}
 
+	function handleInterruptCycle() {
+		setActiveCycleId(null);
+
+		setCycles(
+			cycles.map((cycle) => {
+				if (cycle.id === activerCycleId) {
+					return { ...cycle, interruptionDate: new Date() };
+				} else {
+					return cycle;
+				}
+			})
+		);
+	}
+
 	const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
 	const currentSeconds = activeCycle ? totalSeconds - pastSecondsAmount : 0;
 	const minutesAmount = Math.floor(currentSeconds / 60);
@@ -105,6 +120,7 @@ export function Home() {
 						appearance-none"
 						placeholder="Nome do projeto"
 						{...register("task")}
+						disabled={!!activeCycle}
 					/>
 
 					<datalist id="task-suggestions">
@@ -125,6 +141,7 @@ export function Home() {
 						min={5}
 						max={60}
 						{...register("minutesAmount", { valueAsNumber: true })}
+						disabled={!!activeCycle}
 					/>
 
 					<span>minutos.</span>
@@ -140,16 +157,31 @@ export function Home() {
 					<span className="bg-base-600 py-8 px-4 rounded-lg">{seconds[1]}</span>
 				</div>
 
-				<button
-					type="submit"
-					disabled={isSubmitButtonDisabled}
-					className="bg-product-500 w-full flex items-center gap-2 justify-center p-4 rounded-lg
+				{!activeCycle && (
+					<button
+						type="submit"
+						disabled={isSubmitButtonDisabled}
+						className="bg-product-500 w-full flex items-center gap-2 justify-center p-4 rounded-lg
 					font-bold cursor-pointer text-base-100 hover:bg-product-600 transition-colors
 					disabled:bg-product-700 disabled:cursor-not-allowed"
-				>
-					<Play size={24} />
-					Começar
-				</button>
+					>
+						<Play size={24} />
+						Começar
+					</button>
+				)}
+
+				{activeCycle && (
+					<button
+						type="submit"
+						disabled={isSubmitButtonDisabled}
+						onClick={handleInterruptCycle}
+						className="bg-red-500 w-full flex items-center gap-2 justify-center p-4 rounded-lg
+					font-bold cursor-pointer text-base-100 hover:bg-red-600 transition-colors"
+					>
+						<HandPalm size={24} />
+						Interromper
+					</button>
+				)}
 			</form>
 		</div>
 	);
