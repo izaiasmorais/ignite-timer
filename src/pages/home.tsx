@@ -7,7 +7,7 @@ import { differenceInSeconds } from "date-fns";
 
 const newCycleFormValidationSchema = z.object({
 	task: z.string().min(1, "Informe a tarefa"),
-	minutesAmount: z.number().min(5).max(60),
+	minutesAmount: z.number().min(1).max(60),
 });
 
 type NewCycleFormData = z.infer<typeof newCycleFormValidationSchema>;
@@ -18,6 +18,7 @@ interface Cycle {
 	minutesAmount: number;
 	startDate: Date;
 	interruptionDate?: Date;
+	finishedDate?: Date;
 }
 
 export function Home() {
@@ -40,9 +41,27 @@ export function Home() {
 
 		if (activeCycle) {
 			interval = setInterval(() => {
-				setPastSecondsAmount(
-					differenceInSeconds(new Date(), activeCycle.startDate)
+				const secondsDifference = differenceInSeconds(
+					new Date(),
+					activeCycle.startDate
 				);
+
+				if (secondsDifference >= totalSeconds) {
+					setCycles((state) =>
+						state.map((cycle) => {
+							if (cycle.id === activerCycleId) {
+								return { ...cycle, finishedDate: new Date() };
+							} else {
+								return cycle;
+							}
+						})
+					);
+
+					setPastSecondsAmount(totalSeconds);
+					clearInterval(interval);
+				} else {
+					setPastSecondsAmount(secondsDifference);
+				}
 			}, 1000);
 		}
 
@@ -73,8 +92,8 @@ export function Home() {
 	function handleInterruptCycle() {
 		setActiveCycleId(null);
 
-		setCycles(
-			cycles.map((cycle) => {
+		setCycles((state) =>
+			state.map((cycle) => {
 				if (cycle.id === activerCycleId) {
 					return { ...cycle, interruptionDate: new Date() };
 				} else {
@@ -137,8 +156,8 @@ export function Home() {
 						className="bg-transparent h-10 border-0 border-base-500 border-b-2 font-bold text-lg
 						text-base-100 flex-1 w-16 placeholder:shadow-none focus:border-emerald-500 focus:outline-none"
 						placeholder="00"
-						step={5}
-						min={5}
+						step={1}
+						min={1}
 						max={60}
 						{...register("minutesAmount", { valueAsNumber: true })}
 						disabled={!!activeCycle}
