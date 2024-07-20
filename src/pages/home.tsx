@@ -30,13 +30,19 @@ export function Home() {
 	});
 
 	const { handleSubmit, watch, reset } = newCycleForm;
+
+	function handleCreateNewCycle(data: NewCycleFormData) {
+		createNewCycle(data);
+		reset();
+	}
+
 	const task = watch("task");
 	const isSubmitButtonDisabled = !task;
 
 	return (
 		<div className="flex flex-col flex-1 items-center justify-center">
 			<form
-				onSubmit={handleSubmit(createNewCycle)}
+				onSubmit={handleSubmit(handleCreateNewCycle)}
 				className="flex flex-col items-center gap-14"
 			>
 				<FormProvider {...newCycleForm}>

@@ -27,7 +27,11 @@ interface CyclesContextData {
 
 export const CyclesContext = createContext({} as CyclesContextData);
 
-export function CyclesContextProvider({ children }: { children: React.ReactNode }) {
+export function CyclesContextProvider({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	const [cycles, setCycles] = useState<Cycle[]>([]);
 	const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
 	const [pastSecondsAmount, setPastSecondsAmount] = useState(0);
@@ -60,8 +64,6 @@ export function CyclesContextProvider({ children }: { children: React.ReactNode 
 		setCycles((state) => [...state, newCycle]);
 
 		setPastSecondsAmount(0);
-
-		// reset();
 	}
 
 	function interruptCurrentCycle() {
