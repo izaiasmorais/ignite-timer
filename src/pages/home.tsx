@@ -66,8 +66,7 @@ export function Home() {
 
 				{activeCycle && (
 					<button
-						type="submit"
-						disabled={isSubmitButtonDisabled}
+						type="button"
 						onClick={interruptCurrentCycle}
 						className="bg-red-500 w-full flex items-center gap-2 justify-center p-4 rounded-lg
 					font-bold cursor-pointer text-base-100 hover:bg-red-600 transition-colors"
