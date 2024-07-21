@@ -1,16 +1,42 @@
+import type { Cycle } from "../../contexts/cycles-context";
 import { HistoryTableBodyItem } from "./history-table-body-item";
+import { formatDistanceToNow } from "date-fns";
 
-export function HistoryTableItem() {
+interface HistoryTableItemProps {
+	cycle: Cycle;
+}
+
+export function HistoryTableItem({ cycle }: HistoryTableItemProps) {
 	return (
-		<tr>
-			<HistoryTableBodyItem>Estudar React</HistoryTableBodyItem>
-			<HistoryTableBodyItem>20 minutos</HistoryTableBodyItem>
-			<HistoryTableBodyItem>Há 2 dias</HistoryTableBodyItem>
+		<tr key={cycle.id}>
+			<HistoryTableBodyItem>{cycle.task}</HistoryTableBodyItem>
+			<HistoryTableBodyItem>{cycle.minutesAmount} minutos</HistoryTableBodyItem>
 			<HistoryTableBodyItem>
-				<div className="flex items-center gap-2">
-					<div className="w-2 h-2 rounded-full bg-green-500" />
-					Concluído
-				</div>
+				{formatDistanceToNow(cycle.startDate, {
+					addSuffix: true,
+				})}
+			</HistoryTableBodyItem>
+			<HistoryTableBodyItem>
+				{cycle.finishedDate && (
+					<div className="flex items-center gap-2">
+						<div className="w-2 h-2 rounded-full bg-green-500" />
+						Concluído
+					</div>
+				)}
+
+				{cycle.interruptionDate && (
+					<div className="flex items-center gap-2">
+						<div className="w-2 h-2 rounded-full bg-red-500" />
+						Interrompido
+					</div>
+				)}
+
+				{!cycle.finishedDate && !cycle.interruptionDate && (
+					<div className="flex items-center gap-2">
+						<div className="w-2 h-2 rounded-full bg-yellow-500" />
+						Em andamento
+					</div>
+				)}
 			</HistoryTableBodyItem>
 		</tr>
 	);

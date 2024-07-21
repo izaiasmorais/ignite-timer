@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { Router } from "./router";
-import { CyclesContextProvider } from "./context/cycles-context";
+import { CyclesContextProvider } from "./contexts/cycles-context";
 
 export default function App() {
 	return (

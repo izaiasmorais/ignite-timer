@@ -1,5 +1,5 @@
 import { NewCycleForm } from "../components/home/new-cycle-form";
-import { CyclesContext } from "../context/cycles-context";
+import { CyclesContext } from "../contexts/cycles-context";
 import { CountDown } from "../components/home/countdown";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ const newCycleFormValidationSchema = zod.object({
 	task: zod.string().min(1, "Informe a tarefa"),
 	minutesAmount: zod
 		.number()
-		.min(5, "O ciclo precisa ser de no mínimo 5 minutos.")
+		.min(1, "O ciclo precisa ser de no mínimo 1 minutos.")
 		.max(60, "O ciclo precisa ser de no máximo 60 minutos."),
 });
 
