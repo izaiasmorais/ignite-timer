@@ -1,5 +1,10 @@
-import { createContext, useReducer, useState } from "react";
-import { ActionTypes, cyclesReducers } from "../reducers/cycles";
+import { createContext, useEffect, useReducer, useState } from "react";
+import { cyclesReducers } from "../reducers/cycles/reducer";
+import {
+	addNewCycleAction,
+	interruptCurrentCycleAction,
+	markCurrentCycleAsFinishedAction,
+} from "../reducers/cycles/action";
 
 export interface Cycle {
 	id: string;
@@ -39,17 +44,15 @@ export function CyclesContextProvider({
 	});
 
 	const [pastSecondsAmount, setPastSecondsAmount] = useState(0);
+
+	useEffect(() => {
+		const stateJSON = JSON.stringify(cyclesState);
+
+		localStorage.setItem("@ignite-timer:cycles-state-1.0.0", stateJSON);
+	}, [cyclesState]);
+
 	const { cycles, activeCycleId } = cyclesState;
 	const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
-
-	function markCurrentCycleAsFinished() {
-		dispatch({
-			type: ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED,
-			payload: {
-				activeCycleId,
-			},
-		});
-	}
 
 	function createNewCycle(data: NewCycleFormData) {
 		const id = String(new Date().getTime());
@@ -61,23 +64,17 @@ export function CyclesContextProvider({
 			startDate: new Date(),
 		};
 
-		dispatch({
-			type: ActionTypes.ADD_NEW_CYCLE,
-			payload: {
-				newCycle,
-			},
-		});
+		dispatch(addNewCycleAction(newCycle));
 
 		setPastSecondsAmount(0);
 	}
 
 	function interruptCurrentCycle() {
-		dispatch({
-			type: ActionTypes.INTERRUPT_CURRENT_CYCLE,
-			payload: {
-				activeCycleId,
-			},
-		});
+		dispatch(interruptCurrentCycleAction());
+	}
+
+	function markCurrentCycleAsFinished() {
+		dispatch(markCurrentCycleAsFinishedAction());
 	}
 
 	return (
