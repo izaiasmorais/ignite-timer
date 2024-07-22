@@ -12,7 +12,7 @@ export function HistoryTableItem({ cycle }: HistoryTableItemProps) {
 			<HistoryTableBodyItem>{cycle.task}</HistoryTableBodyItem>
 			<HistoryTableBodyItem>{cycle.minutesAmount} minutos</HistoryTableBodyItem>
 			<HistoryTableBodyItem>
-				{formatDistanceToNow(cycle.startDate, {
+				{formatDistanceToNow(new Date(cycle.startDate), {
 					addSuffix: true,
 				})}
 			</HistoryTableBodyItem>
